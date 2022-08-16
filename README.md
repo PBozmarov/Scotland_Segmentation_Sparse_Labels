@@ -14,10 +14,9 @@ QGIS - mostly for visualization and editing/creating polygons.
 We use both machine learning and deep learning models and compare their results using
 5 test statistics - balanced_accuracy, recall, precision, f1, standart accuracy.
 
-ML models we use: * LightGBM
-                  * XGBoost
-                  * Random Forest
-DL models we use we use:  * UNet architecture
+ML models we use: LightGBM , XGBoost, Random Forest.
+
+DL models we use we use:  UNet architecture.
 
 Results: Our best deep learning model outperforms our best machine learning
 model (LightGBM) as it has higher test results. In addition, when we saw how the
