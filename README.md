@@ -23,3 +23,8 @@ model (LightGBM) as it has higher test results. In addition, when we saw how the
 generated classification maps for the best ML and best DL method look, we saw that
 the DL map captures linear features like rivers and roads a lot better. However, overall
 we can conclude that both models produce good maps.
+
+
+Scotland Raster Image:
+![image](https://user-images.githubusercontent.com/77898273/184900618-37720bb2-8316-4f5b-9296-c4d55b42702d.png)
+
