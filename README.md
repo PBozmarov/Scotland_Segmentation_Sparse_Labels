@@ -38,11 +38,11 @@ Scotland Polygons:
 
 Best DL classification map of the region above:
 
-![map_dl_scotland](https://user-images.githubusercontent.com/77898273/184902824-327e0362-2cb4-401a-b97a-e8b7a0a26793.png)
+<img src="https://user-images.githubusercontent.com/77898273/184902824-327e0362-2cb4-401a-b97a-e8b7a0a26793.png" height="800" width="800">
 
 Best ML classification map of the region above:
 
-![map_ml_scotland](https://user-images.githubusercontent.com/77898273/184902915-ff2ea91f-2bba-43f1-82c4-882858647002.png)
+<img src="https://user-images.githubusercontent.com/77898273/184902915-ff2ea91f-2bba-43f1-82c4-882858647002.png" height="800" width="800">
 
 Stats Best DL:
 
