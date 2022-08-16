@@ -24,7 +24,18 @@ generated classification maps for the best ML and best DL method look, we saw th
 the DL map captures linear features like rivers and roads a lot better. However, overall
 we can conclude that both models produce good maps.
 
+Scotland Raster Area:
+![image](https://user-images.githubusercontent.com/77898273/184901038-00921e14-1528-4956-abf5-ebb6e7b6233a.png)
 
 Scotland Raster Image:
 ![image](https://user-images.githubusercontent.com/77898273/184900618-37720bb2-8316-4f5b-9296-c4d55b42702d.png)
+
+Scotland Polygons:
+![image](https://user-images.githubusercontent.com/77898273/184901404-0cfe8a7d-6093-482f-b7bc-ef7eb8263aa6.png)
+
+UNet architecture:
+![image](https://user-images.githubusercontent.com/77898273/184901603-8daeae8d-89ca-460b-ae3e-b372d3e87376.png)
+
+
+
 
