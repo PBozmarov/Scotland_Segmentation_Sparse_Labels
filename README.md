@@ -33,6 +33,20 @@ Scotland Raster Image:
 Scotland Polygons:
 ![image](https://user-images.githubusercontent.com/77898273/184901404-0cfe8a7d-6093-482f-b7bc-ef7eb8263aa6.png)
 
+Best DL classification map of the region above:
+![map_dl_scotland](https://user-images.githubusercontent.com/77898273/184902824-327e0362-2cb4-401a-b97a-e8b7a0a26793.png)
+
+Best ML classification map of the region above:
+![map_ml_scotland](https://user-images.githubusercontent.com/77898273/184902915-ff2ea91f-2bba-43f1-82c4-882858647002.png)
+
+Stats Best DL:
+![DL](https://user-images.githubusercontent.com/77898273/184903806-ce095654-b6e5-4e76-a417-3e1ad6251c98.png)
+
+Stats Best ML:
+![Screenshot 2022-08-16 at 15 21 25](https://user-images.githubusercontent.com/77898273/184903840-6dde4f22-7edb-472e-b91c-65cbbb670561.png)
+
+Here by time cost we mean the training time for our model for 1 fold. We have 4 folds in total.
+Thus this is the time cost for a model with 75%-25% train-test split.
 UNet architecture:
 ![image](https://user-images.githubusercontent.com/77898273/184901603-8daeae8d-89ca-460b-ae3e-b372d3e87376.png)
 
