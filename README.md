@@ -8,8 +8,7 @@ have a label assigned to it.
 
 Technologies we use:
 
-Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn
-
+Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn.
 QGIS - mostly for visualization and editing/creating polygons.
                   
 We use both machine learning and deep learning models and compare their results using
