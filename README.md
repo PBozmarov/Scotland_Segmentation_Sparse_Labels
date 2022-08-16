@@ -6,8 +6,9 @@ file which consists of polygons related to this raster image. We are
 working with sparse data. Thus, not every pixel in our raster image will 
 have a label assigned to it. 
 
-Technologies we use: * Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn
-                     * QGIS - mostly for visualization and editing/creating polygons.
+Technologies we use:
+Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn
+QGIS - mostly for visualization and editing/creating polygons.
                   
 We use both machine learning and deep learning models and compare their results using
 5 test statistics - balanced_accuracy, recall, precision, f1, standart accuracy.
