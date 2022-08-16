@@ -16,7 +16,9 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import csv
 
+from scipy import ndimage
 from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
@@ -344,6 +346,86 @@ def mask_trainings_and_predictions(x_train,y_train,model):
   
   return (y_train,y_pred)
 
+def mask_trainings_and_predictions_equal_polygons(x_train,y_train,model):
+
+ '''
+   Input: batch from our training dataset and our model.
+   Output: modified y_train and modified predictions.
+   
+   Description: We work with sparse labels so most of the pixels in the elements of y_batch
+                will be nodata (less than 0 ). We don't want our loss to take them into account,
+                so we need to create a mask which restricts the domain of the loss function
+                only on the non-negative pixel values of the elements from y_batch. In this fun-
+                ction we also consider each polygon to be equally important, no matter how small
+                it is.
+
+  '''
+# record the batch size
+ batch_size = y_train.shape[0]
+
+  # we find the predictions
+ y_pred  = model(x_train)
+
+ # copy(clone) y_train
+ y_train_copy = y_train.clone()
+
+# we create the desired mask and apply it to y_train
+ mask_train = (y_train >= 0)
+ y_train_masked = y_train[mask_train]
+
+ # we reshape it by removing a band ( band 1 )
+ y_train_copy = y_train_copy.reshape(batch_size,256,256)
+
+ # we merge the labels from each batch to one long image
+ y_train_copy = y_train_copy.reshape(256*batch_size,256).T
+
+ # -999 -> 0, -1->0, 0->500. 
+ mask_999 = (y_train_copy==-999)
+ mask_0 = (y_train_copy==0)
+ mask_1 = (y_train_copy==-1)
+
+ y_train_copy[mask_999]=0
+ y_train_copy[mask_1]=0
+ y_train_copy[mask_0]=500
+
+ # we will need this structure for the following function
+ s = ndimage.generate_binary_structure(2,2)
+
+ # this is our polygons id mask
+ 
+ polygons_id_mask = ndimage.label(y_train_copy.cpu(),structure=s)[0]
+ polygons_id_mask = torch.LongTensor(polygons_id_mask.T)
+ polygons_id_mask = polygons_id_mask.view(batch_size,1,256,256)
+
+ # we use the mask_train to take only the non nan valus
+ polygons_id_mask_masked = polygons_id_mask[mask_train]
+
+ # we reshape our mask ( remove 1 dimension )
+ mask_train = mask_train.reshape([len(x_train),256,256])
+
+# this is our masked y_pred
+ y_pred = torch.cat([y_pred[:,0,:,:][mask_train],  y_pred[:,1,:,:][mask_train],y_pred[:,2,:,:][mask_train],y_pred[:,3,:,:][mask_train],
+           y_pred[:,4,:,:][mask_train],y_pred[:,5,:,:][mask_train], y_pred[:,6,:,:][mask_train]],dim=0)
+  
+                      
+  # we fix y_pred to the appropriate shape
+ y_pred = torch.transpose(y_pred.view(7,-1),0,1)
+
+ # we take the indexes of the sorted polygons_id_mask_masked
+ sorted_indexes_polygons_id_mask_masked = polygons_id_mask_masked.argsort()
+
+ # we sort y_train, y_pred, and polygons_id_mask_masked based on the above indexes
+ y_train_masked_sorted = y_train_masked[sorted_indexes_polygons_id_mask_masked]
+ sorted_polygons_id_mask_masked = polygons_id_mask_masked[sorted_indexes_polygons_id_mask_masked]
+ y_pred_masked_sorted = y_pred[sorted_indexes_polygons_id_mask_masked]
+
+
+ # now we divide our y_train and y_pred into subsets for every polygon
+ y_train_masked_split_by_polygons = np.split(y_train_masked_sorted, np.unique(sorted_polygons_id_mask_masked, return_index=True)[1][1:])
+ y_pred_masked_split_by_polygons = np.split(y_pred_masked_sorted, np.unique(sorted_polygons_id_mask_masked, return_index=True)[1][1:])
+
+ return y_train_masked_split_by_polygons,y_pred_masked_split_by_polygons
+
 
   # Checking our predictions
 def nn_generate_predictions(y_pred):
@@ -639,10 +721,12 @@ def randomized_search_nn(train_data,test_data,labels,classes,init_features,batch
             parameters.remove(choice)
 
 
-def create_map(model,raster_image,raster_subimage,raster_subimage_classifier,windows_height,windows_width,origin_x,origin_y,bands,gpu=True):
+def create_map(model,raster_image,raster_subimage,raster_subimage_classifier,
+             windows_height,windows_width,origin_x,origin_y,bands,gpu=True):
     
     '''
-    This function takes as an input a raster image and a pre-trained deep learning model (UNet) and outputs a classification map.
+    This function takes as an input a raster image and a pre-trained deep learning model 
+    (UNet) and outputs a classification map.
     input: model - our best model
            raster_image - path to the raster image
            raster_subimage - path to the subimage of the raster that would be created
@@ -651,7 +735,8 @@ def create_map(model,raster_image,raster_subimage,raster_subimage_classifier,win
            bands - number of bands for our image
 
     
-    output: raster_subimage and raster_subimage_classifier <-- the map, to the chosen locations
+    output: raster_subimage and raster_subimage_classifier <-- the map, to the chosen 
+            locations
 
     '''
     
@@ -707,3 +792,72 @@ def create_map(model,raster_image,raster_subimage,raster_subimage_classifier,win
     # save the the subraster image
     with rasterio.open(raster_subimage, 'w', **meta) as outds:
                 outds.write(src.read(window=window))
+
+def cut_img(im,perc):
+  '''
+  This function cuts each polygon of an image with perc.
+  The cutting is with respect to the y-axis
+  '''
+  
+  im = im.copy()
+  
+  # we will use this to edit the polygons mask
+  im_copy = im.copy()
+  
+  # this is the image we return - the cut image
+  new_img = np.full((256,256),-999)
+
+  # we swap -999,-1->0,  0->500, before using ndimage.label
+  mask_999 = (im==-999)
+  mask_0 = (im==0)
+  mask_1 = (im==-1)
+
+  im_copy[mask_1]=0
+  im_copy[mask_999]=0
+  im_copy[mask_0]=500
+
+  s = ndimage.generate_binary_structure(2,2)
+  
+  # the labeled polygons from the image, and the number of diff polygons
+  im_pol,n_pols = ndimage.label(im_copy.reshape((256,256)),structure =s)
+
+  # loop through the id of different polygons 1-n_pols
+  for pol_id in np.arange(1,n_pols+1):
+
+      # find the indexes in the labeled polygons where the label is equal to pol_id
+      # Thus, these are indexes for only 1 polygon
+      inds = np.where(im_pol==pol_id)
+      
+      # number of indexes in the above mentioned polygon
+      n = len(inds[0])
+      
+      # we remove the last perc indexes/ cut the polygon indexes / cut the polygon
+      cut = int(np.ceil((1-perc)*n))
+      inds_new = (inds[0][:cut],inds[1][:cut])
+
+      im = im.reshape((256,256))
+
+      # we find the image value that corresponds to the current polygon
+      val = im[inds_new][0]
+
+      # we put in our return image the indexes of the current cut polygon, the
+      # mentioned value on the previous line
+      new_img[inds_new] = val
+
+
+  return new_img.reshape((1,256,256))
+
+def cut_labels(y,perc):
+  '''
+  This function uses the funtion cut_img, to cut each image from
+  a label dataset, and return the new cut label dataset
+  '''
+  y = y.copy()
+
+  for i,img in enumerate(y):
+
+      # assign to the current index the cut image of the current image
+      y[i] = cut_img(img,perc)
+
+  
+  return y 
