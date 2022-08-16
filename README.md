@@ -7,6 +7,7 @@ working with sparse data. Thus, not every pixel in our raster image will
 have a label assigned to it. 
 
 Technologies we use:
+
 Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn
 
 QGIS - mostly for visualization and editing/creating polygons.
