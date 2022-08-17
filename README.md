@@ -9,13 +9,6 @@ have a label assigned to it.
 
 ## Technologies we use
 Python
-                  
-We use both machine learning and deep learning models and compare their results using
-5 test statistics - balanced_accuracy, recall, precision, f1, standart accuracy.
-
-ML models we use: LightGBM , XGBoost, Random Forest.
-
-DL models we use we use:  UNet architecture.
 
 ## File Structure
 In the **Data Links** file, there are links for the raster and vector files.
