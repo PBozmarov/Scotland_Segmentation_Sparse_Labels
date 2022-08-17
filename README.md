@@ -8,9 +8,7 @@ working with sparse data. Thus, not every pixel in our raster image will
 have a label assigned to it. 
 
 ## Technologies we use
-
-Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn.
-QGIS - mostly for visualization and editing/creating polygons.
+Python
                   
 We use both machine learning and deep learning models and compare their results using
 5 test statistics - balanced_accuracy, recall, precision, f1, standart accuracy.
@@ -24,6 +22,8 @@ In the **Data Links** file, there are links for the raster and vector files.
 In the *src* folder is our code which consists of .ipynb and .py files.
 In the *models results* there are csv files which log the testing results
 for our models.
+In the **requirements** file, there are the requirements for the libraries (modules)
+used.
 
 ## Code Structure
 In the src folder - the .py files are used only as packages - to store
