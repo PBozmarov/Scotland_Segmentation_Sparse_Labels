@@ -8,7 +8,7 @@ working with sparse data. Thus, not every pixel in our raster image will
 have a label assigned to it. 
 
 ## Technologies we use
-Python
+Python.
 
 ## File Structure
 In the **Data Links** file, there are links for the raster and vector files.
