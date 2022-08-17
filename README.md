@@ -20,6 +20,7 @@ ML models we use: LightGBM , XGBoost, Random Forest.
 DL models we use we use:  UNet architecture.
 
 ## File Structure
+In the **Data Links** file, there are links for the raster and vector files.
 In the *src* folder is our code which consists of .ipynb and .py files.
 In the *models results* there are csv files which log the testing results
 for our models.
