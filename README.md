@@ -13,7 +13,7 @@ Python.
 ## File Structure
 In the **Data Links** file, there are links for the raster and vector files.
 In the *src* folder is our code which consists of .ipynb and .py files.
-In the *models results* there are csv files which log the testing results
+In the *model_results* there are csv files which log the testing results
 for our models.
 In the **requirements** file, there are the requirements for the libraries (modules)
 used.
