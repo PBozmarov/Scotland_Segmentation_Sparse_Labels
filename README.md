@@ -1,12 +1,13 @@
 # Creating classification maps from Scotland dataset
 
+## The goal of the project
 Our goal is to create classification maps from dataset which 
 consists of a raster image of a region in Scotland and a vector (geojson)
 file which consists of polygons related to this raster image. We are
 working with sparse data. Thus, not every pixel in our raster image will 
 have a label assigned to it. 
 
-Technologies we use:
+## Technologies we use
 
 Python - PyTorch, Scikit Learn, NumPy, Pandas, GeoPandas, Seaborn.
 QGIS - mostly for visualization and editing/creating polygons.
@@ -18,12 +19,33 @@ ML models we use: LightGBM , XGBoost, Random Forest.
 
 DL models we use we use:  UNet architecture.
 
-Results: Our best deep learning model outperforms our best machine learning
+## File Structure
+In the data folder *data* a link to raster and vector files could be found.
+In the *src* folder is our code which consists of .ipynb and .py files.
+In the *models results* there are csv files which log the testing results
+for our models.
+
+## Code Structure
+In the src folder - the .py files are used only as packages - to store
+all the functions and classes we designed.
+
+Generally our code is split in two parts - machine learning and deep learning.
+For the machine learning part, we first rasterize our polygons - we add in a
+dataframe each pixel that belongs both to a polygon and to the raster file and the
+pixel's corresponding label. Then, we train-test using LightGBM, XGBoost, and Random Forest.
+For our deep learning we rasterize our vector file but this time we rasterize the whole 
+file and keep it as an image. Then, we cut this rasterized vector file and the raster file
+into tiles with height,width = 256,256. Next, we train-test a PyTorch UNet architecture.
+Finally, we generate classification maps for our models.
+
+## Results
+Our best deep learning model outperforms our best machine learning
 model (LightGBM) as it has higher test results. In addition, when we saw how the
 generated classification maps for the best ML and best DL method look, we saw that
 the DL map captures linear features like rivers and roads a lot better. However, overall
 we can conclude that both models produce good maps.
 
+## Visualizing dataset and rezults
 Scotland Raster Area:
 
 ![image](https://user-images.githubusercontent.com/77898273/184901038-00921e14-1528-4956-abf5-ebb6e7b6233a.png)
